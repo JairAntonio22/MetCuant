@@ -18,10 +18,14 @@ from sklearn.ensemble import (
 
 from sklearn import metrics
 
+from joblib import dump, load, hash
+
+from tqdm import tqdm
+import time
+
 
 def get_error(model, X, y, percent):
     pred = model.predict(X)
-
     err = np.abs(y - pred) / y
     err = err[err <= percent]
 
@@ -46,22 +50,34 @@ def test_models(X, y):
 
     scores = [['modelo', 'score', 'err 5%', 'err 10%', 'err 15%']]
 
-    for name, clf in clfs:
+    for name, clf in tqdm(clfs):
+        
         clf.fit(X_train, y_train)
         score = clf.score(X_test, y_test)
-
+        
         err_5 = get_error(clf, X_test, y_test, 0.05)
         err_10 = get_error(clf, X_test, y_test, 0.10)
         err_15 = get_error(clf, X_test, y_test, 0.15)
+    
 
         scores.append([name, score, err_5, err_10, err_15])
+
+        dump(clf,"{}.joblib".format(name))
+        
+        time.sleep(0.5)
 
     print(tabulate(scores, headers='firstrow', showindex=True))
 
 
+def n_samples(df,num):
+    samples = num
+    print(samples)
+    return df.head(samples)
+
+    
 def main():
     df = pd.read_csv('beer_reviews_updated.csv')
-    df = df.head(10_000)
+    df = n_samples(df,1_000)
 
     columns_to_drop = [
         'beer_name', 'brewery_id', 'review_time', 'beer_beerid',
