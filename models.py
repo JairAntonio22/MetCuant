@@ -77,7 +77,7 @@ def n_samples(df,num):
     
 def main():
     df = pd.read_csv('beer_reviews_updated.csv')
-    df = n_samples(df,1_000)
+    # df = n_samples(df,1_000)
 
     columns_to_drop = [
         'beer_name', 'brewery_id', 'review_time', 'beer_beerid',

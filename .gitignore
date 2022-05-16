@@ -3,3 +3,5 @@
 
 Models_Notebook.ipynb
 .ipynb_checkpoints/Models_Notebook-checkpoint.ipynb
+*.joblib
+venv/
