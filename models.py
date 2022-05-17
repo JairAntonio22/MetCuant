@@ -8,12 +8,11 @@ from sklearn.model_selection import train_test_split
 
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
 from sklearn.neighbors import KNeighborsRegressor
 
 from sklearn.ensemble import (
-    RandomForestRegressor, GradientBoostingRegressor, AdaBoostRegressor
+    RandomForestRegressor, HistGradientBoostingRegressor, AdaBoostRegressor
 )
 
 from sklearn import metrics
@@ -34,18 +33,17 @@ def get_error(model, X, y, percent):
 
 def test_models(X, y):
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=.80, random_state=42
+        X, y, train_size=.85, random_state=42
     )
 
     clfs = [
         ('lin reg', LinearRegression()),
         ('decision tree', DecisionTreeRegressor()),
-        ('svr', SVR()),
+        ('random forest', RandomForestRegressor(n_jobs=-1)),
+        ('knn reg', KNeighborsRegressor(n_jobs=-1)),
         ('mlp reg', MLPRegressor()),
-        ('knn reg', KNeighborsRegressor()),
-        ('random forest', RandomForestRegressor()),
-        ('gradient boost', GradientBoostingRegressor()),
         ('ada boost', AdaBoostRegressor()),
+        ('gradient boost', HistGradientBoostingRegressor(max_depth=3, max_leaf_nodes=3)),
     ]
 
     scores = [['modelo', 'score', 'err 5%', 'err 10%', 'err 15%']]
@@ -71,13 +69,13 @@ def test_models(X, y):
 
 def n_samples(df,num):
     samples = num
-    print(samples)
+    print("Testing models with {} datapoints which is {:.2f}% of the dataset".format(samples, (samples/len(df)*100)))
     return df.head(samples)
 
     
 def main():
     df = pd.read_csv('beer_reviews_updated.csv')
-    # df = n_samples(df,1_000)
+    df = n_samples(df,800000)
 
     columns_to_drop = [
         'beer_name', 'brewery_id', 'review_time', 'beer_beerid',
