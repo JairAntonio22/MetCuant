@@ -25,7 +25,7 @@ def simulate(X):
 
     for column in X.columns:
         low = np.min(X[column])
-        high = np.min(X[column])
+        high = np.max(X[column])
 
         simX = X.copy()
         simX[column] = np.random.uniform(low, high, len(X))
